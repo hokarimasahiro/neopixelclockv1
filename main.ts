@@ -78,8 +78,8 @@ input.onButtonPressed(Button.A, function () {
     }
 })
 function メッセージ選択 (メッセージ番号: number) {
-    if (メッセージ番号 < メッセージリスト.length) {
-        メッセージ = メッセージリスト[メッセージ番号]
+    if (メッセージ番号 < message.msgList.length) {
+        メッセージ = message.msgList[メッセージ番号]
         if (メッセージ.length > 64) {
             for (let index = 0; index < 行末空白; index++) {
                 メッセージ = "" + メッセージ + "00"
@@ -98,7 +98,7 @@ function メッセージ選択 (メッセージ番号: number) {
 }
 input.onButtonPressed(Button.B, function () {
     メッセージ番号 += 1
-    if (メッセージ番号 > メッセージリスト.length) {
+    if (メッセージ番号 > message.msgList.length) {
         メッセージ番号 = 0
     }
     メッセージ選択(メッセージ番号)
@@ -164,14 +164,12 @@ let fontlist = ""
 let 背景色 = 0
 let 文字色 = 0
 let メッセージ番号 = 0
-let メッセージリスト: string[] = []
 let 行末空白 = 0
 let strip2: neopixel.Strip = null
 let strip: neopixel.Strip = null
 let FONT: string[] = []
 let 文字変換表 = ""
 let 時刻 = 0
-let メッセージor時計 = 0
 rtc.setDevice(rtcType.ds3231)
 時刻 = rtc.getDatetime()
 文字変換表 = "0123456789:_ "
@@ -183,11 +181,6 @@ strip2 = neopixel.create(DigitalPin.P1, 256, NeoPixelMode.RGB)
 strip2.clear()
 strip2.show()
 行末空白 = 8
-let welcome_SuZuka = "F80618601806F8001C2A2A2A180080FE001C222222001C2222221C003E201E201E001C2A2A2A1800000064929292924C003C0202043E0082868A92A2C2003C0202043E00FE08142200042A2A2A1E00"
-let SuZuka_YosHida = "64929292924C003C0202043E0082868A92A2C2003C0202043E00FE08142200042A2A2A1E0000008040201E204080001C2222221C00122A2A2A2400FE10101010FE00BE001C222212FE00042A2A2A1E00"
-let welcom = "F8061806F8001C2A2A1A80FE001C2222001C22221C001E201E201E001C2A2A1A"
-let suzuka = "649292924C003C02023E00868A92A2C2003C02023E00FE08142200042A2A1E00"
-メッセージリスト = [welcome_SuZuka, SuZuka_YosHida, welcom]
 メッセージ番号 = 3
 文字色 = neopixel.colors(NeoPixelColors.Indigo)
 背景色 = neopixel.colors(NeoPixelColors.Black)
@@ -199,15 +192,8 @@ basic.forever(function () {
     輝度 = Math.constrain(input.lightLevel(), 最小輝度, 最大輝度)
     strip.setBrightness(輝度 / 5)
     strip2.setBrightness(輝度 / 5)
-    if (メッセージ番号 >= メッセージリスト.length) {
+    if (メッセージ番号 >= message.msgList.length) {
         時刻表示()
-    } else if (メッセージ番号 >= メッセージリスト.length - 1) {
-        if (Math.trunc(時刻 / 3) % 2 == 0) {
-            固定表示(welcom)
-        } else {
-            固定表示(suzuka)
-        }
-        strip.show()
     } else {
         if (メッセージ.length > 64) {
             表示位置 = シフト表示(メッセージ, 表示位置)
