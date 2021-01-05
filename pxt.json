@@ -3,12 +3,13 @@
     "description": "",
     "dependencies": {
         "core": "*",
-        "radio": "*",
         "microphone": "*",
         "pxt-watchfont": "github:hokarimasahiro/pxt-watchfont#d5e3bf68305bc0ea0b17a19000a6f7f340f7f792",
-        "neopixel": "github:microsoft/pxt-neopixel#v0.7.3",
-        "bit": "github:hokarimasahiro/pxt-bitoperation#87d57edd3c3494fdd536c9f241fce0d972b0025a",
-        "pxt-rtc": "github:hokarimasahiro/pxt-rtc#59f3c43461a9138a35e5933baa673d1fe349ad3b"
+        "bit": "github:hokarimasahiro/pxt-bitoperation#3227c17a7c61b827e3142e074e98f394aac87a1e",
+        "pxt-rtc": "github:hokarimasahiro/pxt-rtc#d7e7a06363a387c9f8b630d4fa6c16dddea187f4",
+        "pxt-neopixel": "github:hokarimasahiro/pxt-neopixel#495e63c8dc948358735ab290532af1568ef2a7cb",
+        "pxt-neopixelclock": "github:hokarimasahiro/pxt-neopixelclock#9f4b803be21f07c5e44b429596d84ee299531d6a",
+        "bluetooth": "*"
     },
     "files": [
         "main.blocks",

@@ -1,16 +1,6 @@
-function 時計フォント展開 (text: string) {
-    fontlist = ""
-    for (let index2 = 0; index2 <= text.length - 1; index2++) {
-        font_no = 文字変換表.indexOf(text.charAt(index2))
-        if (font_no >= 0) {
-            fontlist = "" + fontlist + FONT[font_no]
-        }
-    }
-    return fontlist
-}
-function 固定表示 (fontList: string) {
-    for (let index22 = 0; index22 <= fontList.length / 2 - 1; index22++) {
-        LINE = bit.hexToNumber(fontList.substr(index22 * 2, 2))
+function 固定表示 (stripData: string) {
+    for (let index22 = 0; index22 <= stripData.length / 2 - 1; index22++) {
+        LINE = bit.hexToNumber(stripData.substr(index22 * 2, 2))
         for (let Y = 0; Y <= 7; Y++) {
             if (index22 % 2 == 0) {
                 POS = index22 * 8 + (0 + Y)
@@ -25,10 +15,10 @@ function 固定表示 (fontList: string) {
         }
     }
 }
-function シフト表示 (fontlist: string, 表示位置: number) {
+function シフト表示 (stripData: string, 表示位置: number) {
     strip.shift(-8)
     strip2.shift(-8)
-    LINE = bit.hexToNumber(fontlist.substr(表示位置, 2))
+    LINE = bit.hexToNumber(stripData.substr(表示位置, 2))
     for (let Y2 = 0; Y2 <= 7; Y2++) {
         if (表示位置 % 4 == 0) {
             POS2 = Y2 + 248
@@ -50,7 +40,7 @@ function シフト表示 (fontlist: string, 表示位置: number) {
     } else {
         strip2.show()
     }
-    if (表示位置 >= fontlist.length - 2) {
+    if (表示位置 >= stripData.length - 2) {
         return 0
     } else {
         return 表示位置 + 2
@@ -77,6 +67,25 @@ input.onButtonPressed(Button.A, function () {
         文字色 = neopixel.colors(NeoPixelColors.Red)
     }
 })
+bluetooth.onUartDataReceived(serial.delimiters(Delimiters.NewLine), function () {
+    受信文字 = bluetooth.uartReadUntil(serial.delimiters(Delimiters.NewLine))
+    コマンド処理(受信文字)
+})
+function コマンド処理 (コマンド文字列: string) {
+    コマンド = コマンド文字列.charAt(0)
+    パラメータ = コマンド文字列.substr(2, 100).split(",")
+    if (コマンド == "s") {
+        rtc.setClock(
+        bit.strToNumber(パラメータ[0]),
+        bit.strToNumber(パラメータ[1]),
+        bit.strToNumber(パラメータ[2]),
+        bit.strToNumber(パラメータ[3]),
+        bit.strToNumber(パラメータ[4]),
+        bit.strToNumber(パラメータ[5]),
+        bit.strToNumber(パラメータ[6])
+        )
+    }
+}
 function メッセージ選択 (メッセージ番号: number) {
     if (メッセージ番号 < message.msgList.length) {
         メッセージ = message.msgList[メッセージ番号]
@@ -104,10 +113,10 @@ input.onButtonPressed(Button.B, function () {
     メッセージ選択(メッセージ番号)
 })
 function 時刻表示 () {
-    時刻 = rtc.getDatetime()
-    時 = rtc.getData(時刻, clockData.hour)
-    分 = rtc.getData(時刻, clockData.minute)
-    秒 = rtc.getData(時刻, clockData.second)
+    rtc.getClock()
+    時 = rtc.getClockData(clockData.hour)
+    分 = rtc.getClockData(clockData.minute)
+    秒 = rtc.getClockData(clockData.second)
     if (時 < 10) {
         時計文字 = " "
     } else {
@@ -125,7 +134,7 @@ function 時刻表示 () {
         時計文字 = "" + 時計文字 + ""
     }
     時計文字 = "" + 時計文字 + convertToText(分)
-    固定表示(時計フォント展開(時計文字))
+    固定表示(clockfont.getClockStrip(時計文字))
     for (let index3 = 0; index3 <= 29; index3++) {
         POS2 = index3 + Math.trunc(index3 / 10)
         if (POS2 % 2 == 0) {
@@ -156,24 +165,20 @@ let 分 = 0
 let 時 = 0
 let 表示位置 = 0
 let メッセージ = ""
+let パラメータ: string[] = []
+let コマンド = ""
+let 受信文字 = ""
 let POS2 = 0
 let POS = 0
 let LINE = 0
-let font_no = 0
-let fontlist = ""
 let 背景色 = 0
 let 文字色 = 0
 let メッセージ番号 = 0
 let 行末空白 = 0
 let strip2: neopixel.Strip = null
 let strip: neopixel.Strip = null
-let FONT: string[] = []
-let 文字変換表 = ""
-let 時刻 = 0
-rtc.setDevice(rtcType.ds3231)
-時刻 = rtc.getDatetime()
-文字変換表 = "0123456789:_ "
-FONT = ["7C828282827C00", "000042FE020000", "468A9292926200", "44829292926C00", "1C244484FE0400", "E2A2A2A2A29C00", "1C325292920C00", "80808E90A0C000", "6C929292926C00", "60929294987000", "006C6C00", "00000000", "00000000000000"]
+bluetooth.startUartService()
+rtc.getClock()
 strip = neopixel.create(DigitalPin.P1, 256, NeoPixelMode.RGB)
 strip.clear()
 strip.show()
@@ -181,14 +186,13 @@ strip2 = neopixel.create(DigitalPin.P1, 256, NeoPixelMode.RGB)
 strip2.clear()
 strip2.show()
 行末空白 = 8
-メッセージ番号 = 3
+メッセージ番号 = 0
 文字色 = neopixel.colors(NeoPixelColors.Indigo)
 背景色 = neopixel.colors(NeoPixelColors.Black)
 let 最大輝度 = 255
 let 最小輝度 = 5
 メッセージ選択(メッセージ番号)
 basic.forever(function () {
-    時刻 = rtc.getDatetime()
     輝度 = Math.constrain(input.lightLevel(), 最小輝度, 最大輝度)
     strip.setBrightness(輝度 / 5)
     strip2.setBrightness(輝度 / 5)
@@ -202,8 +206,5 @@ basic.forever(function () {
     basic.pause(100)
 })
 control.inBackground(function () {
-    while (true) {
-        watchfont.plotBarGraph(input.lightLevel())
-        basic.pause(100)
-    }
+	
 })
