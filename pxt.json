@@ -3,7 +3,6 @@
     "description": "",
     "dependencies": {
         "core": "*",
-        "microphone": "*",
         "pxt-watchfont": "github:hokarimasahiro/pxt-watchfont#d5e3bf68305bc0ea0b17a19000a6f7f340f7f792",
         "bit": "github:hokarimasahiro/pxt-bitoperation#3227c17a7c61b827e3142e074e98f394aac87a1e",
         "pxt-rtc": "github:hokarimasahiro/pxt-rtc#d7e7a06363a387c9f8b630d4fa6c16dddea187f4",
