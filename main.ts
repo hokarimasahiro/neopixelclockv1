@@ -1,7 +1,3 @@
-bluetooth.onUartDataReceived(serial.delimiters(Delimiters.NewLine), function () {
-    受信文字 = bluetooth.uartReadUntil(serial.delimiters(Delimiters.NewLine))
-    コマンド処理(受信文字)
-})
 function 固定表示 (stripData: string) {
     for (let index22 = 0; index22 <= stripData.length / 2 - 1; index22++) {
         LINE = bit.hexToNumber(stripData.substr(index22 * 2, 2))
@@ -50,26 +46,43 @@ function シフト表示 (stripData: string) {
         表示位置 = 表示位置 + 2
     }
 }
+input.onButtonPressed(Button.A, function () {
+    if (文字色 == neopixel.colors(NeoPixelColors.Red)) {
+        文字色 = neopixel.colors(NeoPixelColors.Orange)
+    } else if (文字色 == neopixel.colors(NeoPixelColors.Orange)) {
+        文字色 = neopixel.colors(NeoPixelColors.Yellow)
+    } else if (文字色 == neopixel.colors(NeoPixelColors.Yellow)) {
+        文字色 = neopixel.colors(NeoPixelColors.Green)
+    } else if (文字色 == neopixel.colors(NeoPixelColors.Green)) {
+        文字色 = neopixel.colors(NeoPixelColors.Blue)
+    } else if (文字色 == neopixel.colors(NeoPixelColors.Blue)) {
+        文字色 = neopixel.colors(NeoPixelColors.Indigo)
+    } else if (文字色 == neopixel.colors(NeoPixelColors.Indigo)) {
+        文字色 = neopixel.colors(NeoPixelColors.Violet)
+    } else if (文字色 == neopixel.colors(NeoPixelColors.Violet)) {
+        文字色 = neopixel.colors(NeoPixelColors.Purple)
+    } else if (文字色 == neopixel.colors(NeoPixelColors.Purple)) {
+        文字色 = neopixel.colors(NeoPixelColors.White)
+    } else {
+        文字色 = neopixel.colors(NeoPixelColors.Red)
+    }
+})
+bluetooth.onUartDataReceived(serial.delimiters(Delimiters.NewLine), function () {
+    受信文字 = bluetooth.uartReadUntil(serial.delimiters(Delimiters.NewLine))
+    コマンド処理(受信文字)
+})
 function コマンド処理 (コマンド文字列: string) {
     コマンド = コマンド文字列.charAt(0)
     パラメータ = コマンド文字列.substr(2, 100).split(",")
     if (コマンド == "s") {
-        year = bit.strToNumber(パラメータ[0])
-        month = bit.strToNumber(パラメータ[1])
-        day = bit.strToNumber(パラメータ[2])
-        weekday = bit.strToNumber(パラメータ[3])
-        hour = bit.strToNumber(パラメータ[4])
-        minute = bit.strToNumber(パラメータ[5])
-        second = bit.strToNumber(パラメータ[6])
-        rtc.setClock(
-        year,
-        month,
-        day,
-        weekday,
-        hour,
-        minute,
-        second
-        )
+        rtc.setClockData(clockData.year, parseInt(パラメータ[0]))
+        rtc.setClockData(clockData.month, parseInt(パラメータ[1]))
+        rtc.setClockData(clockData.day, parseInt(パラメータ[2]))
+        rtc.setClockData(clockData.weekday, parseInt(パラメータ[3]))
+        rtc.setClockData(clockData.hour, parseInt(パラメータ[4]))
+        rtc.setClockData(clockData.minute, parseInt(パラメータ[5]))
+        rtc.setClockData(clockData.second, parseInt(パラメータ[6]))
+        rtc.setClock()
     }
 }
 function メッセージ選択 (メッセージ番号: number) {
@@ -144,53 +157,32 @@ function 時刻表示 () {
     }
     strip.show()
 }
-input.onButtonPressed(Button.A, function () {
-    if (文字色 == neopixel.colors(NeoPixelColors.Red)) {
-        文字色 = neopixel.colors(NeoPixelColors.Orange)
-    } else if (文字色 == neopixel.colors(NeoPixelColors.Orange)) {
-        文字色 = neopixel.colors(NeoPixelColors.Yellow)
-    } else if (文字色 == neopixel.colors(NeoPixelColors.Yellow)) {
-        文字色 = neopixel.colors(NeoPixelColors.Green)
-    } else if (文字色 == neopixel.colors(NeoPixelColors.Green)) {
-        文字色 = neopixel.colors(NeoPixelColors.Blue)
-    } else if (文字色 == neopixel.colors(NeoPixelColors.Blue)) {
-        文字色 = neopixel.colors(NeoPixelColors.Indigo)
-    } else if (文字色 == neopixel.colors(NeoPixelColors.Indigo)) {
-        文字色 = neopixel.colors(NeoPixelColors.Violet)
-    } else if (文字色 == neopixel.colors(NeoPixelColors.Violet)) {
-        文字色 = neopixel.colors(NeoPixelColors.Purple)
-    } else if (文字色 == neopixel.colors(NeoPixelColors.Purple)) {
-        文字色 = neopixel.colors(NeoPixelColors.White)
-    } else {
-        文字色 = neopixel.colors(NeoPixelColors.Red)
-    }
-})
 let 輝度 = 0
 let 時計文字 = ""
 let 秒 = 0
 let 分 = 0
 let 時 = 0
 let メッセージ = ""
-let second = 0
-let minute = 0
-let hour = 0
-let weekday = 0
-let day = 0
-let month = 0
-let year = 0
 let パラメータ: string[] = []
 let コマンド = ""
+let 受信文字 = ""
 let POS2 = 0
 let 表示位置 = 0
 let POS = 0
 let LINE = 0
-let 受信文字 = ""
 let 背景色 = 0
 let 文字色 = 0
 let メッセージ番号 = 0
 let 行末空白 = 0
 let strip2: neopixel.Strip = null
 let strip: neopixel.Strip = null
+let year = 0
+let month = 0
+let day = 0
+let weekday = 0
+let hour = 0
+let minute = 0
+let second = 0
 bluetooth.startUartService()
 rtc.getClock()
 strip = neopixel.create(DigitalPin.P1, 256, NeoPixelMode.RGB)

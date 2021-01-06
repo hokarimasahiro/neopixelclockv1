@@ -5,10 +5,11 @@
         "core": "*",
         "pxt-watchfont": "github:hokarimasahiro/pxt-watchfont#d5e3bf68305bc0ea0b17a19000a6f7f340f7f792",
         "bit": "github:hokarimasahiro/pxt-bitoperation#3227c17a7c61b827e3142e074e98f394aac87a1e",
-        "pxt-rtc": "github:hokarimasahiro/pxt-rtc#d7e7a06363a387c9f8b630d4fa6c16dddea187f4",
+        "pxt-rtc": "github:hokarimasahiro/pxt-rtc#eefe43538750c8ecfb3329dbe5dbcd352a67d673",
         "pxt-neopixel": "github:hokarimasahiro/pxt-neopixel#495e63c8dc948358735ab290532af1568ef2a7cb",
         "pxt-neopixelclock": "github:hokarimasahiro/pxt-neopixelclock#9f4b803be21f07c5e44b429596d84ee299531d6a",
-        "bluetooth": "*"
+        "bluetooth": "*",
+        "microphone": "*"
     },
     "files": [
         "main.blocks",
